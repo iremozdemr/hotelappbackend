@@ -14,59 +14,118 @@ const sections = [
   { title: 'A La Carte', video: '/videos/alacarte.mp4' }
 ];
 
+const customPlaylist = [
+  '/videos/welcome1.mp4',
+  '/videos/welcome2.mp4',
+  '/videos/welcome3.mp4'
+];
+
+const socket = io('http://192.168.13.224:3001');
+const isTablet = new URLSearchParams(window.location.search).get('role') === 'tablet';
+
 const App = () => {
-  const [isTablet, setIsTablet] = useState(false);
+  const [menuStarted, setMenuStarted] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [customVideo, setCustomVideo] = useState(customPlaylist[0]);
+  const [customStep, setCustomStep] = useState(0); // yeni state ile kontrol kolaylığı
   const socketRef = useRef(null);
+  const inactivityTimer = useRef(null);
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const role = urlParams.get('role');
-    const isTabletMode = role === 'tablet';
-    setIsTablet(isTabletMode);
-
-    const socket = io('http://192.168.13.224:3001');
     socketRef.current = socket;
 
-    // 👉 Bu olayları role belirlendikten sonra bağla
     socket.on('connect', () => {
       console.log('Connected to socket:', socket.id);
     });
 
     socket.on('init', (index) => {
-      if (!isTabletMode) {
+      if (!isTablet) {
+        setCustomVideo(null);
         setCurrentIndex(index);
       }
     });
 
     socket.on('playVideo', (index) => {
-      if (!isTabletMode) {
-        console.log('TV received playVideo:', index);
+      if (!isTablet) {
+        setCustomVideo(null);
         setCurrentIndex(index);
       }
     });
 
-    return () => socket.disconnect();
+    socket.on('playCustomVideo', (videoPath) => {
+      if (!isTablet) {
+        setCustomStep(0);
+        setCustomVideo(customPlaylist[0]);
+      }
+    });
+
+    return () => socket.off();
   }, []);
 
+  // Tablet için: dokunulmazsa 10 saniye sonra robot moduna dön
+  useEffect(() => {
+    if (isTablet && menuStarted) {
+      const resetInactivityTimer = () => {
+        clearTimeout(inactivityTimer.current);
+        inactivityTimer.current = setTimeout(() => {
+          console.log('Tablet inactive: returning to robot');
+          setMenuStarted(false);
+          socketRef.current?.emit('playCustomVideo', customPlaylist[0]);
+        }, 10000);
+      };
+
+      const reset = () => resetInactivityTimer();
+
+      document.addEventListener('touchstart', reset);
+      document.addEventListener('mousedown', reset);
+      resetInactivityTimer();
+
+      return () => {
+        document.removeEventListener('touchstart', reset);
+        document.removeEventListener('mousedown', reset);
+        clearTimeout(inactivityTimer.current);
+      };
+    }
+  }, [menuStarted]);
+
+  // Tablet açılışta robot gif gösterir
+  if (isTablet && !menuStarted) {
+    return (
+      <div
+        className="w-screen h-screen bg-black flex items-center justify-center"
+        onTouchStart={() => {
+          setMenuStarted(true);
+          socketRef.current?.emit('selectVideo', 0);
+        }}
+      >
+        <img src="/robot-face.gif" alt="Robot Face" className="w-full h-full object-cover" />
+      </div>
+    );
+  }
+
+  // TV'de VideoPlayer bileşeni
   return (
     <div className="w-screen h-screen bg-black text-white">
       {isTablet ? (
         <TabletMenu
           sections={sections}
           onSelect={(index) => {
-            console.log('Tablet sending selectVideo:', index);
+            setCustomVideo(null);
             socketRef.current?.emit('selectVideo', index);
           }}
         />
       ) : (
-        // <VideoPlayer src={sections[currentIndex].video} onEnded={() => {}} />
         <VideoPlayer
-          src={sections[currentIndex].video}
-          title={sections[currentIndex].title}
-          onEnded={() => { }}
+          src={customVideo || sections[currentIndex]?.video || customPlaylist[0]}
+          title={!customVideo ? sections[currentIndex]?.title : undefined}
+          onEnded={() => {
+            if (!isTablet && !menuStarted && customVideo) {
+              const next = (customStep + 1) % customPlaylist.length;
+              setCustomStep(next);
+              setCustomVideo(customPlaylist[next]);
+            }
+          }}
         />
-
       )}
     </div>
   );
