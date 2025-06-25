@@ -4,14 +4,14 @@ import VideoPlayer from './components/VideoPlayer';
 import TabletMenu from './components/TabletMenu';
 
 const sections = [
-  { title: 'Restaurants & Bars', video: '/videos/restaurant.mp4' },
-  { title: 'Concerts', video: '/videos/concerts.mp4' },
-  { title: 'Pool & Beach', video: '/videos/pool.mp4' },
-  { title: 'Just for Kids', video: '/videos/kids.mp4' },
-  { title: 'Natural Life', video: '/videos/natural.mp4' },
-  { title: 'Spa & Wellness', video: '/videos/spa.mp4' },
-  { title: 'Gluten Free Concept', video: '/videos/gluten.mp4' },
-  { title: 'A La Carte', video: '/videos/alacarte.mp4' }
+  { title: { en: 'Restaurants & Bars', tr: 'Restoranlar ve Barlar', ru: 'Рестораны и Бары' }, video: '/videos/restaurant.mp4' },
+  { title: { en: 'Concerts', tr: 'Konserler', ru: 'Концерты' }, video: '/videos/concerts.mp4' },
+  { title: { en: 'Pool & Beach', tr: 'Havuz ve Plaj', ru: 'Бассейн и Пляж' }, video: '/videos/pool.mp4' },
+  { title: { en: 'Just for Kids', tr: 'Sadece Çocuklar İçin', ru: 'Только для детей' }, video: '/videos/kids.mp4' },
+  { title: { en: 'Natural Life', tr: 'Doğal Yaşam', ru: 'Природная Жизнь' }, video: '/videos/natural.mp4' },
+  { title: { en: 'Spa & Wellness', tr: 'Spa ve Sağlık', ru: 'Спа и Вэлнес' }, video: '/videos/spa.mp4' },
+  { title: { en: 'Gluten Free Concept', tr: 'Glütensiz Konsept', ru: 'Безглютеновая Концепция' }, video: '/videos/gluten.mp4' },
+  { title: { en: 'A La Carte', tr: 'A La Carte', ru: 'А Ла Карт' }, video: '/videos/alacarte.mp4' }
 ];
 
 const customPlaylist = [
@@ -30,6 +30,8 @@ const App = () => {
   const [customStep, setCustomStep] = useState(0); // yeni state ile kontrol kolaylığı
   const socketRef = useRef(null);
   const inactivityTimer = useRef(null);
+
+  const [language, setLanguage] = useState('en'); // başlangıç dili
 
   useEffect(() => {
     socketRef.current = socket;
@@ -58,6 +60,13 @@ const App = () => {
         setCustomVideo(customPlaylist[0]);
       }
     });
+
+    socket.on('changeLanguage', (lang) => {
+      if (!isTablet) {
+        setLanguage(lang);
+      }
+    });
+
 
     return () => socket.off();
   }, []);
@@ -88,6 +97,12 @@ const App = () => {
     }
   }, [menuStarted]);
 
+  const handleLanguageChange = (lang) => {
+    setLanguage(lang);
+    socketRef.current?.emit('changeLanguage', lang); // TV'ye bildir
+  };
+
+
   // Tablet açılışta robot gif gösterir
   if (isTablet && !menuStarted) {
     return (
@@ -108,11 +123,15 @@ const App = () => {
       {isTablet ? (
         <TabletMenu
           sections={sections}
+          language={language}
+          onLanguageChange={handleLanguageChange}
           onSelect={(index) => {
             setCustomVideo(null);
             socketRef.current?.emit('selectVideo', index);
           }}
         />
+
+
       ) : (
         <>
           {/* Eğer custom video oynuyorsa: Etkileşim çağrısı */}
@@ -126,7 +145,7 @@ const App = () => {
 
           <VideoPlayer
             src={customVideo || sections[currentIndex]?.video || customPlaylist[0]}
-            title={!customVideo ? sections[currentIndex]?.title : undefined}
+            title={!customVideo ? sections[currentIndex]?.title[language] : undefined}
             onEnded={() => {
               if (!isTablet && !menuStarted && customVideo) {
                 const next = (customStep + 1) % customPlaylist.length;
@@ -135,8 +154,15 @@ const App = () => {
               }
             }}
           />
+
         </>
       )}
+      <img
+        src="/guris-logo.webp"
+        alt="GÜRİŞ Teknoloji"
+        className="fixed bottom-7 right-7 w-40 opacity-90"
+      />
+
     </div>
   );
 
