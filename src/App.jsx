@@ -4,14 +4,14 @@ import VideoPlayer from './components/VideoPlayer';
 import TabletMenu from './components/TabletMenu';
 
 const sections = [
-  { title: { en: 'Restaurants & Bars', tr: 'Restoranlar ve Barlar', ru: 'Рестораны и Бары' }, video: '/videos/restaurant.mp4' },
-  { title: { en: 'Concerts', tr: 'Konserler', ru: 'Концерты' }, video: '/videos/concerts.mp4' },
-  { title: { en: 'Pool & Beach', tr: 'Havuz ve Plaj', ru: 'Бассейн и Пляж' }, video: '/videos/pool.mp4' },
-  { title: { en: 'Just for Kids', tr: 'Sadece Çocuklar İçin', ru: 'Только для детей' }, video: '/videos/kids.mp4' },
-  { title: { en: 'Natural Life', tr: 'Doğal Yaşam', ru: 'Природная Жизнь' }, video: '/videos/natural.mp4' },
-  { title: { en: 'Spa & Wellness', tr: 'Spa ve Sağlık', ru: 'Спа и Вэлнес' }, video: '/videos/spa.mp4' },
-  { title: { en: 'Gluten Free Concept', tr: 'Glütensiz Konsept', ru: 'Безглютеновая Концепция' }, video: '/videos/gluten.mp4' },
-  { title: { en: 'A La Carte', tr: 'A La Carte', ru: 'А Ла Карт' }, video: '/videos/alacarte.mp4' }
+  { title: { en: 'Restaurants & Bars', tr: 'Restoranlar ve Barlar', ru: 'Рестораны и Бары', de: 'Restaurants & Bars' }, video: '/videos/restaurant.mp4' },
+  { title: { en: 'Concerts', tr: 'Konserler', ru: 'Концерты', de: 'Konzerte' }, video: '/videos/concerts.mp4' },
+  { title: { en: 'Pool & Beach', tr: 'Havuz ve Plaj', ru: 'Бассейн и Пляж', de: 'Pool & Strand' }, video: '/videos/pool.mp4' },
+  { title: { en: 'Just for Kids', tr: 'Sadece Çocuklar İçin', ru: 'Только для детей', de: 'Nur für Kinder' }, video: '/videos/kids.mp4' },
+  { title: { en: 'Natural Life', tr: 'Doğal Yaşam', ru: 'Природная Жизнь', de: 'Natürliches Leben' }, video: '/videos/natural.mp4' },
+  { title: { en: 'Spa & Wellness', tr: 'Spa ve Sağlık', ru: 'Спа и Вэлнес', de: 'Spa & Wellness' }, video: '/videos/spa.mp4' },
+  { title: { en: 'Gluten Free Concept', tr: 'Glütensiz Konsept', ru: 'Безглютеновая Концепция', de: 'Glutenfreies Konzept' }, video: '/videos/gluten.mp4' },
+  { title: { en: 'A La Carte', tr: 'A La Carte', ru: 'А Ла Карт', de: 'À la Carte' }, video: '/videos/alacarte.mp4' }
 ];
 
 const customPlaylist = [
