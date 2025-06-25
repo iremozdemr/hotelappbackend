@@ -18,24 +18,6 @@ const HotelInfo = ({ onFinish }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const videoRef = useRef(null);
 
-    // useEffect(() => {
-    //     const video = videoRef.current;
-    //     if (!video) return;
-
-    //     const handleLoadedMetadata = () => {
-    //         const duration = video.duration * 1000;
-    //         const timer = setTimeout(() => {
-    //             setCurrentIndex((prev) => (prev + 1) % sections.length);
-    //         }, duration);
-    //         return () => clearTimeout(timer);
-    //     };
-
-    //     video.addEventListener('loadedmetadata', handleLoadedMetadata);
-
-    //     return () => {
-    //         video.removeEventListener('loadedmetadata', handleLoadedMetadata);
-    //     };
-    // }, [currentIndex]);
     useEffect(() => {
         const video = videoRef.current;
         if (!video) return;
@@ -78,28 +60,6 @@ const HotelInfo = ({ onFinish }) => {
                 </ul>
             </div>
 
-            {/* <div className="w-1/4 h-full bg-gradient-to-b from-[#f8f4f0] to-[#e8e3de] p-10 flex flex-col justify-center border-l border-[#976a4d]/30 shadow-xl">
-                <h2 className="text-3xl font-bold text-[#976a4d] mb-8 pb-4 border-b-2 border-[#976a4d]/40 tracking-wide">
-                    What We Offer
-                </h2>
-                <ul className="space-y-3 text-base tracking-wide font-medium text-[#3b2e26]">
-                    {sections.map((section, index) => (
-                        <li
-                            key={section.title}
-                            className={`cursor-default px-5 py-3 rounded-lg transition-all duration-300 ${index === currentIndex
-                                ? 'bg-[#976a4d] text-white font-semibold shadow-md scale-[1.02]'
-                                : 'hover:bg-[#976a4d]/10 text-[#3b2e26]'
-                                }`}
-                        >
-                            {section.title}
-                        </li>
-                    ))}
-                </ul>
-            </div>  */}
-            {/* sidebar ortada
-
-
-            {/* Sol İçerik */}
             <div className="flex flex-col items-center justify-start w-3/4 bg-white p-10 space-y-1">
                 <img
                     src={Logo}

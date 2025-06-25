@@ -1,33 +1,3 @@
-// import React, { useRef, useEffect } from 'react';
-
-// const VideoPlayer = ({ src }) => {
-//   const videoRef = useRef(null);
-
-//   useEffect(() => {
-//     if (videoRef.current) {
-//       videoRef.current.load();
-//       videoRef.current.play().catch((error) => {
-//         console.warn('Video playback failed:', error);
-//       });
-//     }
-//   }, [src]);
-
-
-//   return (
-//     <video
-//       ref={videoRef}
-//       src={src}
-//       autoPlay
-//       muted
-//       playsInline
-//       controls={false}
-//       className="w-full h-full object-cover"
-//     />
-//   );
-// };
-
-// export default VideoPlayer;
-
 import React from 'react';
 
 const VideoPlayer = ({ src, title, onEnded }) => {

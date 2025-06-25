@@ -103,9 +103,8 @@ const App = () => {
     );
   }
 
-  // TV'de VideoPlayer bileşeni
   return (
-    <div className="w-screen h-screen bg-black text-white">
+    <div className="w-screen h-screen bg-black text-white relative">
       {isTablet ? (
         <TabletMenu
           sections={sections}
@@ -115,20 +114,32 @@ const App = () => {
           }}
         />
       ) : (
-        <VideoPlayer
-          src={customVideo || sections[currentIndex]?.video || customPlaylist[0]}
-          title={!customVideo ? sections[currentIndex]?.title : undefined}
-          onEnded={() => {
-            if (!isTablet && !menuStarted && customVideo) {
-              const next = (customStep + 1) % customPlaylist.length;
-              setCustomStep(next);
-              setCustomVideo(customPlaylist[next]);
-            }
-          }}
-        />
+        <>
+          {/* Eğer custom video oynuyorsa: Etkileşim çağrısı */}
+          {customVideo && (
+            <div className="absolute top-15 w-full text-center z-20">
+              <div className="inline-block px-6 py-5 bg-[#976a4d] bg-opacity-70 text-white text-xl font-bold rounded-full shadow-md animate-bounce">
+                ↑ touch my face to interact
+              </div>
+            </div>
+          )}
+
+          <VideoPlayer
+            src={customVideo || sections[currentIndex]?.video || customPlaylist[0]}
+            title={!customVideo ? sections[currentIndex]?.title : undefined}
+            onEnded={() => {
+              if (!isTablet && !menuStarted && customVideo) {
+                const next = (customStep + 1) % customPlaylist.length;
+                setCustomStep(next);
+                setCustomVideo(customPlaylist[next]);
+              }
+            }}
+          />
+        </>
       )}
     </div>
   );
+
 };
 
 export default App;
